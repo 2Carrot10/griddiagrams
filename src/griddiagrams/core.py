@@ -788,10 +788,35 @@ def x_nw(vertlist: VertList, loc: Tuple[int, int]) -> VertList:
     return [tuple(segment) for segment in temp]
 
 class Dir(Enum):
+    __order__ = "NW SW SE NE"
     NW = 0
     SW = 1
     SE = 2
     NE = 3
+
+def destab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, target_x: str) -> VertList:
+    tupleIndex = 0 if target_x else 1
+    north = direction == Dir.NW or direction == Dir.NE
+    west = direction == Dir.NW or direction == Dir.SW
+
+    if loc not in vertlist:
+        raise ValueError(f"Segment {loc} not in vertical list")
+
+    k = vertlist.index(loc) # k is the segment index of target (horizontal position)
+    temp = [list(tpl) for tpl in vertlist]
+
+    # TODO: Error checking
+
+    for segment in temp:
+        for j in range(len(segment)):
+            if segment[j] > loc[tupleIndex]:
+                segment[j] -= 1
+            elif (not north) and (segment[j] >= loc[tupleIndex]):
+                segment[j] -= 1
+
+    temp.pop(k)
+
+    return [tuple(segment) for segment in temp]
 
 def stab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, target_x: str) -> VertList:
     tupleIndex = 0 if target_x else 1
@@ -811,14 +836,10 @@ def stab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, target_x: str
             elif (not north) and (segment[j] >= loc[tupleIndex]):
                 segment[j] += 1
     
-    print(temp)
-
     insertOffset = 1 if west else 0
     remainderOffset = 0 if west else 1
-    segment = [loc[tupleIndex], loc[0] + 1] if north else [loc[0] + 1, loc[0]]
+    segment = [loc[tupleIndex], loc[tupleIndex] + 1] if north else [loc[tupleIndex] + 1, loc[tupleIndex]]
     temp.insert(k + insertOffset, segment)
-    print(temp)
-    print("index: ", tupleIndex + remainderOffset)
     if north:
         temp[k + remainderOffset][tupleIndex] = loc[tupleIndex] + 1
     else:
@@ -946,12 +967,7 @@ def print_vertlist(vertlist: VertList):
         print("○" if x < o else "x", end="")
         print("·" * (len(xos) - max(x,o)))
 
-
-# ╭───╮
-# │   │
-# ╰───╯
-
-def print_vertlist_clean(vertlist: VertList):
+def print_clean(vertlist: VertList):
     xos = v_to_h(vertlist)
     downward_lines = [False] * len(vertlist)
     for xo in xos:
