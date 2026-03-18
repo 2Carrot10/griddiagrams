@@ -793,8 +793,8 @@ class Dir(Enum):
     SE = 2
     NE = 3
 
-def stab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, XorO: str) -> VertList:
-    tupleIndex = 0 if XorO else 1
+def stab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, target_x: str) -> VertList:
+    tupleIndex = 0 if target_x else 1
     north = direction == Dir.NW or direction == Dir.NE
     west = direction == Dir.NW or direction == Dir.SW
 
@@ -808,16 +808,21 @@ def stab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, XorO: str) ->
         for j in range(len(segment)):
             if segment[j] > loc[tupleIndex]:
                 segment[j] += 1
-            elif (not north) and segment[j] >= loc[tupleIndex]:
+            elif (not north) and (segment[j] >= loc[tupleIndex]):
                 segment[j] += 1
+    
+    print(temp)
 
     insertOffset = 1 if west else 0
+    remainderOffset = 0 if west else 1
     segment = [loc[tupleIndex], loc[0] + 1] if north else [loc[0] + 1, loc[0]]
     temp.insert(k + insertOffset, segment)
+    print(temp)
+    print("index: ", tupleIndex + remainderOffset)
     if north:
-        temp[k][tupleIndex] = loc[tupleIndex] + 1
+        temp[k + remainderOffset][tupleIndex] = loc[tupleIndex] + 1
     else:
-        temp[k][tupleIndex] = loc[tupleIndex] - 1
+        temp[k + remainderOffset][tupleIndex] = loc[tupleIndex]
 
     return [tuple(segment) for segment in temp]
 
