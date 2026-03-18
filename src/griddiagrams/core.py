@@ -7,6 +7,7 @@ and grid state finding algorithms.
 from typing import List, Tuple, Optional, Dict, Set, Union
 import numpy as np
 from numpy.typing import NDArray
+from enum import Enum
 
 
 # Type aliases
@@ -780,9 +781,44 @@ def x_nw(vertlist: VertList, loc: Tuple[int, int]) -> VertList:
                 segment[j] += 1
     
     # Insert new segment and modify existing one
+    # Always places X bellow Y to the right
     temp.insert(k + 1, [loc[0], loc[0] + 1])
     temp[k][0] = loc[0] + 1
     
+    return [tuple(segment) for segment in temp]
+
+class Dir(Enum):
+    NW = 0
+    SW = 1
+    SE = 2
+    NE = 3
+
+def stab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, XorO: str) -> VertList:
+    tupleIndex = 0 if XorO else 1
+    north = direction == Dir.NW or direction == Dir.NE
+    west = direction == Dir.NW or direction == Dir.SW
+
+    if loc not in vertlist:
+        raise ValueError(f"Segment {loc} not in vertical list")
+
+    k = vertlist.index(loc) # k is the segment index of target (horizontal position)
+    temp = [list(tpl) for tpl in vertlist]
+
+    for segment in temp:
+        for j in range(len(segment)):
+            if segment[j] > loc[tupleIndex]:
+                segment[j] += 1
+            elif (not north) and segment[j] >= loc[tupleIndex]:
+                segment[j] += 1
+
+    insertOffset = 1 if west else 0
+    segment = [loc[tupleIndex], loc[0] + 1] if north else [loc[0] + 1, loc[0]]
+    temp.insert(k + insertOffset, segment)
+    if north:
+        temp[k][tupleIndex] = loc[tupleIndex] + 1
+    else:
+        temp[k][tupleIndex] = loc[tupleIndex] - 1
+
     return [tuple(segment) for segment in temp]
 
 
@@ -890,3 +926,46 @@ def _gridstate_finder_commute_with_visited(
             break
     
     return None
+
+def gridstate_finder_stab_destab(vertlist: VertList, n: int) -> Optional[Dict]:
+    pass
+
+def print_vertlist(vertlist: VertList):
+    xos = v_to_h(vertlist)
+    for xo in xos:
+        x, o = xo
+
+        print("." * min(x,o), end="")
+        print("✗" if x < o else "○", end="")
+        print("." * (abs(x - o) - 1), end="")
+        print("○" if x < o else "x", end="")
+        print("·" * (len(xos) - max(x,o)))
+
+
+# ╭───╮
+# │   │
+# ╰───╯
+
+def print_vertlist_clean(vertlist: VertList):
+    xos = v_to_h(vertlist)
+    downward_lines = [False] * len(vertlist)
+    for xo in xos:
+        x, o = xo
+
+        for i in range(len(vertlist)):
+            if i == min(x, o):
+                print("╰" if downward_lines[min(x, o)] else "╭", end="")
+                downward_lines[i] = not downward_lines[i]
+            elif i == max(x, o):
+                print("╯" if downward_lines[max(x, o)] else "╮", end="")
+                downward_lines[i] = not downward_lines[i]
+            else:
+                if min(x, o) < i and i < max(x, o):
+                    print("─", end="")
+                elif downward_lines[i]:
+                    print("│", end="")
+                else:
+                    print(" ", end="")
+
+        print()
+

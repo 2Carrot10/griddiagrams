@@ -21,7 +21,7 @@ def load_knot_data() -> None:
     """
     global _data, _data_path
 
-    _data_path = Path("data/knotinfo.csv")
+    _data_path = Path("../data/knotinfo.csv")
 
     if not _data_path.exists():
         raise FileNotFoundError(
