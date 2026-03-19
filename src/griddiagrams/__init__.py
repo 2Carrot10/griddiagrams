@@ -52,6 +52,7 @@ __all__ = [
     "core",
     "data", 
     "plotting",
+    "search",
     # Core functions
     "gridnotation_to_gridlist",
     "vlist",

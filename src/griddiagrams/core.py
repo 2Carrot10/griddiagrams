@@ -991,7 +991,7 @@ def print_clean(vertlist: VertList):
                 elif downward_lines[i]:
                     print("│", end="")
                 else:
-                    print(" ", end="")
+                    print(".", end="")
 
         print()
 
