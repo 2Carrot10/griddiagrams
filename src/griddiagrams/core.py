@@ -794,51 +794,36 @@ class Dir(Enum):
     SE = 2
     NE = 3
 
+# loc_index must refer to index of right side of the twist
 def destab(vertlist: VertList, loc_index: int, direction: Dir, tuple_index: Literal[0, 1]) -> VertList:
     north = direction == Dir.NW or direction == Dir.NE
     west = direction == Dir.NW or direction == Dir.SW
 
-    loc = vertlist[loc_index]
-
-    k = loc_index # k is the segment index of target (horizontal position)
     temp = [list(tpl) for tpl in vertlist]
-    print(temp)
-    temp.pop(k)
+    loc = temp.pop(loc_index + (0 if west else -1))
 
-    # TODO: Error checking
+    # TODO: Error checking to ensure that destab is valid
 
-    print(temp)
-    remainderOffset = -1 if west else 0
+    # index is shifted by -1 to account for shifting from deletion
     if north:
-        temp[k + remainderOffset][tuple_index] -= 1
-    else:
-        pass
-        # temp[k + remainderOffset][tuple_index] += 1
+        temp[loc_index - 1][tuple_index] -= 1
 
-
-    print("NEXT")
-
-    print(temp)
-
-    print("to beat", loc)
+    shift_back_index = loc[tuple_index] + (1 if north else 0)
     curr_segment_num = 0
     for segment in temp:
         curr_tuple_index = 0
         for j in range(len(segment)):
-            if (curr_segment_num == (k + remainderOffset)) and (j == tuple_index):
+            if (curr_segment_num == (loc_index -1)) and (j == tuple_index):
                 continue
-            if segment[j] > (loc[tuple_index] + 1):
-                segment[j] -= 1
-            elif (not north) and (segment[j] >= (loc[tuple_index]) - 1):
+            if segment[j] >= shift_back_index:
                 segment[j] -= 1
             curr_tuple_index += 1 
         curr_segment_num += 1 
 
-    print(temp)
-    print(temp)
-
     return [tuple(segment) for segment in temp]
 
+# A generalized version of x_nw. Additionally takes in direction function and an index of tuple to target
+# (the first element is generally considered to be the x position. The second element is the y position).
 def stabilize(vertlist: VertList, loc: Tuple[int, int], direction: Dir, tuple_index: Literal[0, 1]) -> VertList:
     north = direction == Dir.NW or direction == Dir.NE
     west = direction == Dir.NW or direction == Dir.SW
