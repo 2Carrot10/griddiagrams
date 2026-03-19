@@ -795,7 +795,7 @@ class Dir(Enum):
     NE = 3
 
 # loc_index must refer to index of right side of the twist
-def destab(vertlist: VertList, loc_index: int, direction: Dir, tuple_index: Literal[0, 1]) -> VertList:
+def destabilization(vertlist: VertList, loc_index: int, direction: Dir, tuple_index: Literal[0, 1]) -> VertList:
     north = direction == Dir.NW or direction == Dir.NE
     west = direction == Dir.NW or direction == Dir.SW
 

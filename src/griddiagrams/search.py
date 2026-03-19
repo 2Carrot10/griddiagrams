@@ -9,7 +9,7 @@ from .data import get_all_knot_names, get_vlist_by_name
 
 # Options for search_function are gridstate_finder_commute, gridstate_finder_stab
 # Options for print_function are print_clean, print_vertlist
-def find_nice_for_all(search_function, path_name, depth = 50, print_function=print_clean):
+def find_nice_for_all_knots(search_function, path_name, depth = 50, print_function=print_clean):
     try:
         path_name = Path(path_name)
         for knot in get_all_knot_names():

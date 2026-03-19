@@ -1,5 +1,5 @@
 import unittest
-from core import Dir, stabilize, print_vertlist, destab, print_clean, x_nw
+from core import Dir, stabilize, print_vertlist, destabilization, print_clean, x_nw
 
 class LearningCase(unittest.TestCase):
     def test_destab(self):
@@ -11,7 +11,7 @@ class LearningCase(unittest.TestCase):
                 b = stabilize([(0,1), (1,0)], (0,1), dir, index)
                 print_vertlist(b)
                 print_clean(b)
-                a = destab(b, 1, dir, index)
+                a = destabilization(b, 1, dir, index)
                 self.assertEqual(a, knot) # I⁻¹ (I knot) = knot
 
     def test_nw_equality(self):
