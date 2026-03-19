@@ -803,16 +803,23 @@ def destab(vertlist: VertList, loc_index: int, direction: Dir, tuple_index: Lite
 
     k = loc_index # k is the segment index of target (horizontal position)
     temp = [list(tpl) for tpl in vertlist]
+    print(temp)
     temp.pop(k)
 
     # TODO: Error checking
 
     print(temp)
     remainderOffset = -1 if west else 0
-    if north:
-        temp[k + remainderOffset][tuple_index] = loc[tuple_index]
+    if north == (tuple_index == 0):
+        loc_val = loc[tuple_index]
     else:
-        temp[k + remainderOffset][tuple_index] = loc[tuple_index]
+        loc_val = loc[tuple_index] # - 1
+    if north:
+        temp[k + remainderOffset][tuple_index] = loc_val
+    else:
+        temp[k + remainderOffset][tuple_index] = loc_val
+
+
     print("NEXT")
 
     print(temp)
@@ -822,7 +829,7 @@ def destab(vertlist: VertList, loc_index: int, direction: Dir, tuple_index: Lite
         for j in range(len(segment)):
             if segment[j] > (loc[tuple_index] + 1):
                 segment[j] -= 1
-            elif (not north) and (segment[j] >= (loc[tuple_index] + 1)):
+            elif (not north) and (segment[j] >= (loc[tuple_index]) - 1):
                 segment[j] -= 1
 
     print(temp)
