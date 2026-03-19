@@ -7,6 +7,7 @@ and grid state finding algorithms.
 from typing import List, Tuple, Optional, Dict, Set, Union
 import numpy as np
 from numpy.typing import NDArray
+from typing import Literal
 from enum import Enum
 
 
@@ -794,32 +795,42 @@ class Dir(Enum):
     SE = 2
     NE = 3
 
-def destab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, target_x: str) -> VertList:
-    tupleIndex = 0 if target_x else 1
+def destab(vertlist: VertList, loc_index: int, direction: Dir, tuple_index: Literal[0, 1]) -> VertList:
     north = direction == Dir.NW or direction == Dir.NE
     west = direction == Dir.NW or direction == Dir.SW
 
-    if loc not in vertlist:
-        raise ValueError(f"Segment {loc} not in vertical list")
+    loc = vertlist[loc_index]
 
-    k = vertlist.index(loc) # k is the segment index of target (horizontal position)
+    k = loc_index # k is the segment index of target (horizontal position)
     temp = [list(tpl) for tpl in vertlist]
+    temp.pop(k)
 
     # TODO: Error checking
 
+    print(temp)
+    remainderOffset = -1 if west else 0
+    if north:
+        temp[k + remainderOffset][tuple_index] = loc[tuple_index]
+    else:
+        temp[k + remainderOffset][tuple_index] = loc[tuple_index]
+    print("NEXT")
+
+    print(temp)
+
+    print("to beat", loc)
     for segment in temp:
         for j in range(len(segment)):
-            if segment[j] > loc[tupleIndex]:
+            if segment[j] > (loc[tuple_index] + 1):
                 segment[j] -= 1
-            elif (not north) and (segment[j] >= loc[tupleIndex]):
+            elif (not north) and (segment[j] >= (loc[tuple_index] + 1)):
                 segment[j] -= 1
 
-    temp.pop(k)
+    print(temp)
+    print(temp)
 
     return [tuple(segment) for segment in temp]
 
-def stab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, target_x: str) -> VertList:
-    tupleIndex = 0 if target_x else 1
+def stabilize(vertlist: VertList, loc: Tuple[int, int], direction: Dir, tuple_index: Literal[0, 1]) -> VertList:
     north = direction == Dir.NW or direction == Dir.NE
     west = direction == Dir.NW or direction == Dir.SW
 
@@ -831,19 +842,19 @@ def stab(vertlist: VertList, loc: Tuple[int, int], direction: Dir, target_x: str
 
     for segment in temp:
         for j in range(len(segment)):
-            if segment[j] > loc[tupleIndex]:
+            if segment[j] > loc[tuple_index]:
                 segment[j] += 1
-            elif (not north) and (segment[j] >= loc[tupleIndex]):
+            elif (not north) and (segment[j] >= loc[tuple_index]):
                 segment[j] += 1
     
     insertOffset = 1 if west else 0
     remainderOffset = 0 if west else 1
-    segment = [loc[tupleIndex], loc[tupleIndex] + 1] if north else [loc[tupleIndex] + 1, loc[tupleIndex]]
+    segment = [loc[tuple_index], loc[tuple_index] + 1] if (north == (tuple_index == 0)) else [loc[tuple_index] + 1, loc[tuple_index]]
     temp.insert(k + insertOffset, segment)
     if north:
-        temp[k + remainderOffset][tupleIndex] = loc[tupleIndex] + 1
+        temp[k + remainderOffset][tuple_index] = loc[tuple_index] + 1
     else:
-        temp[k + remainderOffset][tupleIndex] = loc[tupleIndex]
+        temp[k + remainderOffset][tuple_index] = loc[tuple_index]
 
     return [tuple(segment) for segment in temp]
 
@@ -962,10 +973,10 @@ def print_vertlist(vertlist: VertList):
         x, o = xo
 
         print("." * min(x,o), end="")
-        print("✗" if x < o else "○", end="")
+        print("○" if x < o else "✗", end="")
         print("." * (abs(x - o) - 1), end="")
-        print("○" if x < o else "x", end="")
-        print("·" * (len(xos) - max(x,o)))
+        print("x" if x < o else "○", end="")
+        print("·" * (len(xos) - max(x,o) - 1))
 
 def print_clean(vertlist: VertList):
     xos = v_to_h(vertlist)
