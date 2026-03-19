@@ -782,7 +782,6 @@ def x_nw(vertlist: VertList, loc: Tuple[int, int]) -> VertList:
                 segment[j] += 1
     
     # Insert new segment and modify existing one
-    # Always places X bellow Y to the right
     temp.insert(k + 1, [loc[0], loc[0] + 1])
     temp[k][0] = loc[0] + 1
     
@@ -810,14 +809,11 @@ def destab(vertlist: VertList, loc_index: int, direction: Dir, tuple_index: Lite
 
     print(temp)
     remainderOffset = -1 if west else 0
-    if north == (tuple_index == 0):
-        loc_val = loc[tuple_index]
-    else:
-        loc_val = loc[tuple_index] # - 1
     if north:
-        temp[k + remainderOffset][tuple_index] = loc_val
+        temp[k + remainderOffset][tuple_index] -= 1
     else:
-        temp[k + remainderOffset][tuple_index] = loc_val
+        pass
+        # temp[k + remainderOffset][tuple_index] += 1
 
 
     print("NEXT")
@@ -825,12 +821,18 @@ def destab(vertlist: VertList, loc_index: int, direction: Dir, tuple_index: Lite
     print(temp)
 
     print("to beat", loc)
+    curr_segment_num = 0
     for segment in temp:
+        curr_tuple_index = 0
         for j in range(len(segment)):
+            if (curr_segment_num == (k + remainderOffset)) and (j == tuple_index):
+                continue
             if segment[j] > (loc[tuple_index] + 1):
                 segment[j] -= 1
             elif (not north) and (segment[j] >= (loc[tuple_index]) - 1):
                 segment[j] -= 1
+            curr_tuple_index += 1 
+        curr_segment_num += 1 
 
     print(temp)
     print(temp)
