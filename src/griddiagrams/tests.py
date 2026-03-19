@@ -2,7 +2,7 @@ import unittest
 from core import Dir, stabilize, print_vertlist, destab, print_clean, x_nw
 
 class LearningCase(unittest.TestCase):
-    def test_starting_out(self):
+    def test_destab(self):
         knot = [(0,1), (1,0)]
 
         for dir in Dir:
@@ -14,6 +14,8 @@ class LearningCase(unittest.TestCase):
                 a = destab(b, 1, dir, index)
                 self.assertEqual(a, knot) # I⁻¹ (I knot) = knot
 
+    def test_nw_equality(self):
+        knot = [(0,1), (1,0)]
         location = (0,1)
         self.assertEqual(x_nw(knot, location), stabilize(knot, location, Dir.NW, 0), knot)
         location = (1,0)
