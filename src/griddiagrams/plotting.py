@@ -117,4 +117,5 @@ def plot_grid_diagram(X, O, matrix=None, P=None, knot_name=None):
     ax.axis('off')
 
     plt.tight_layout()
+    plt.close()
     return fig

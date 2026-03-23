@@ -122,3 +122,16 @@ else:
         "Try increasing the depth or including stabilizations."
     )
 ```
+## New features workflow
+To automatically initiate a search, run
+```bash
+python -m griddiagrams.search
+```
+That command is equivalent to the workflow
+```python
+from griddiagrams.core import print_clean, print_vertlist, gridstate_finder_commute
+from griddiagrams.search import find_nice_for_all_knots
+from griddiagrams.data import load_knot_data
+load_knot_data()
+find_nice_for_all_knots(gridstate_finder_commute, '../output/')
+```

@@ -5,7 +5,8 @@ from typing import List
 from .core import *
 from pathlib import Path
 from .plotting import plot_grid_diagram
-from .data import get_all_knot_names, get_vlist_by_name
+from .data import get_all_knot_names, get_vlist_by_name, load_knot_data
+import json
 
 # Options for search_function are gridstate_finder_commute, gridstate_finder_stab
 # Options for print_function are print_clean, print_vertlist
@@ -38,8 +39,13 @@ def find_nice_for_all_knots(search_function, path_name, depth = 50, print_functi
                     P=perfect_state,
                     knot_name=knot,
                 )
+                png_path = format(path_name / f"nice_diagram_{knot}.png")
+                json_path = format(path_name / f"nice_diagram_{knot}.json")
 
-                fig.savefig(path_name / f"nice_diagram_{knot}.png", dpi=300, bbox_inches="tight")
+                fig.savefig(png_path, dpi=300, bbox_inches="tight")
+
+                with open(json_path, "w") as f:
+                    json.dump(result, f)
             else:
                 print(
                     f"No nice grid diagram found for {knot} using {search_function.__name__} at depth {depth}. "
@@ -48,3 +54,7 @@ def find_nice_for_all_knots(search_function, path_name, depth = 50, print_functi
     except KeyboardInterrupt:
         print("ctrl+C")
         pass
+
+if __name__ == "__main__":
+    load_knot_data()
+    find_nice_for_all_knots(gridstate_finder_commute, '../output/')

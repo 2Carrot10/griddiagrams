@@ -189,38 +189,3 @@ def get_all_knot_names() -> List[str]:
 
 def get_vlist_by_name(x):
      return vlist(gridnotation_to_gridlist(get_grid_notation(x)))
-
-# Options for search_function are gridstate_finder_commute, gridstate_finder_stab
-def find_nice_for_all(search_function, path_name, depth = 50):
-    path_name = Path(path_name)
-    for knot in get_all_knot_names():
-        knot_vlist = get_vlist_by_name(knot)
-        result = gridstate_finder_commute(get_vlist_by_name(knot), depth)
-        if result:
-            nice_grid = result["vlist"]
-            winding_matrix = result["matrix"]
-            perfect_state = result["gridstate"]
-            alex = result["alexander-grading"]
-
-            print("----")
-            print("***", knot)
-            print_clean(knot_vlist)
-            print("Nice knot found")
-            print_clean(nice_grid)
-
-            X2, O2 = vlist_to_XO(nice_grid)
-
-            fig = plot_grid_diagram(
-                X=X2,
-                O=O2,
-                matrix=winding_matrix,
-                P=perfect_state,
-                knot_name=knot,
-            )
-
-            fig.savefig(path_name / f"nice_diagram_{knot}.png", dpi=300, bbox_inches="tight")
-        else:
-            print(
-                f"No nice grid diagram found for {knot} using {search_function.__name__} at depth {depth}. "
-                "Try increasing the depth or including a more powerful search function."
-            )
