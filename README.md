@@ -135,3 +135,7 @@ from griddiagrams.data import load_knot_data
 load_knot_data()
 find_nice_for_all_knots(gridstate_finder_commute, '../output/')
 ```
+To search for only unsolved knots, run
+```bash
+python -m griddiagrams.search unsolved
+```

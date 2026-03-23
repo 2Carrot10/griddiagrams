@@ -7,15 +7,24 @@ from pathlib import Path
 from .plotting import plot_grid_diagram
 from .data import get_all_knot_names, get_vlist_by_name, load_knot_data
 import json
+from sys import argv
 
-# Options for search_function are gridstate_finder_commute, gridstate_finder_stab
-# Options for print_function are print_clean, print_vertlist
+unsolved_knot_names = ["12n_79", "12_168", "13n_282" , "13n_917" , "13n_1279" , "13n_1281" , "13n_1413", "13n_1826" , "13n_2915" , "13n_3089" , "13n_3904" , "13n_3932"]
+
+
 def find_nice_for_all_knots(search_function, path_name, depth = 50, print_function=print_clean):
+    """
+    Options for search_function are gridstate_finder_commute, gridstate_finder_stab
+    Options for print_function are print_clean, print_vertlist
+    """
+    find_nice_for_knots(get_all_knot_names(), search_function, path_name, depth, print_function)
+
+def find_nice_for_knots(knots, search_function, path_name, depth = 50, print_function=print_clean):
     try:
         path_name = Path(path_name)
-        for knot in get_all_knot_names():
+        for knot in knots:
             knot_vlist = get_vlist_by_name(knot)
-            result = gridstate_finder_commute(get_vlist_by_name(knot), depth)
+            result = search_function(get_vlist_by_name(knot), depth)
             if result:
                 nice_grid = result["vlist"]
                 winding_matrix = result["matrix"]
@@ -55,6 +64,13 @@ def find_nice_for_all_knots(search_function, path_name, depth = 50, print_functi
         print("ctrl+C")
         pass
 
+def find_nice_for_unsolved(search_function, path_name, depth = 50, print_function=print_clean):
+    find_nice_for_knots(unsolved_knot_names, search_function, path_name, depth, print_function)
+
 if __name__ == "__main__":
     load_knot_data()
-    find_nice_for_all_knots(gridstate_finder_commute, '../output/')
+
+    if argv[-1] == "unsolved":
+        find_nice_for_unsolved(gridstate_finder_commute, '../output/')
+    else:
+        find_nice_for_all_knots(gridstate_finder_commute, '../output-unsolved/')
