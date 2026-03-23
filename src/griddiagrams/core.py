@@ -720,6 +720,8 @@ def gridstate_finder_commute(vertlist: VertList, n: int) -> Optional[Dict]:
     
     for iteration in range(n):
         new_states = set()
+
+        print("Size of the frontier:", len(current_states))
         
         for state in current_states:
             commuted_states = knot_commute(list(state))

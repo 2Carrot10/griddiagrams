@@ -9,7 +9,7 @@ from .data import get_all_knot_names, get_vlist_by_name, load_knot_data
 import json
 from sys import argv
 
-unsolved_knot_names = ["12n_79", "12_168", "13n_282" , "13n_917" , "13n_1279" , "13n_1281" , "13n_1413", "13n_1826" , "13n_2915" , "13n_3089" , "13n_3904" , "13n_3932"]
+unsolved_knot_names = ["12n_79", "12n_168", "13n_282" , "13n_917" , "13n_1279" , "13n_1281" , "13n_1413", "13n_1826" , "13n_2915" , "13n_3089" , "13n_3904" , "13n_3932"]
 
 
 def find_nice_for_all_knots(search_function, path_name, depth = 50, print_function=print_clean):
